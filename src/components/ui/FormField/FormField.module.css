@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.label {
+  font-size: 14px;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.input {
+  background-color: var(--form-field-bg-color);
+  border: 1px solid var(--metricks-border-color);
+  border-radius: 8px;
+  padding: 16px;
+  font-size: 1rem;
+  color: #ffffff;
+  font-weight: 400;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  font-family: inherit;
+}
+
+.input:focus {
+  border-color: var(--light-blue);
+}
+
+.input::placeholder {
+  color: #64748b;
+}

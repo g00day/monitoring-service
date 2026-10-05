@@ -5,7 +5,7 @@ interface BreadCrumbItem {
   direction: string;
 }
 
-const BreadCrumbNavigation = () => {
+const BreadCrumbNavigation = ({BreadCrumbItems}: { BreadCrumbItems: BreadCrumbItem[] }) => {
 
 }
 

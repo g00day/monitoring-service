@@ -9,6 +9,10 @@
     --chart-line-color: #68CBBD;
     --chart-grid-color: #253249;
     --progress-bar-bg-color: #233149;
+
+    --form-field-bg-color: #121C2C;
+    --submit-btn-bg: #133491;
+    --submit-btn-hover-bg: #153aa0;
 }
 
 * {

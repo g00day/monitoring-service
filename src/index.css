@@ -4,6 +4,11 @@
     --main-stub-bg-color: #101C32;
     --light-blue: #638BFF;
     --metricks-border-color: #253249;
+
+    --secondary-text-color: #91A0B8;
+    --chart-line-color: #68CBBD;
+    --chart-grid-color: #253249;
+    --progress-bar-bg-color: #233149;
 }
 
 * {

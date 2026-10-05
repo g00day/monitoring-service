@@ -1,11 +1,11 @@
-
+import MainStubSection from "@sections/MainStubSection/MainStubSection";
 
 
 const Main = () => {
 
 
     return (
-        <h1>Foo</h1>
+        <MainStubSection />
     )
 }
 

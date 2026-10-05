@@ -1,0 +1,186 @@
+.MainStubSection {
+  background-color: var(--main-stub-bg-color);
+  color: white;
+  padding:6rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  width: 50%;
+  height: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.heading {
+  margin-left: 7.5%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.heading h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.heading .logoWrapper {
+  width: 40px;
+  height: 40px;
+  background-color: var(--light-blue);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Секция дисков */
+.diskSection {
+  background-color: var(--metricks-bg-color);
+  border: 1px solid var(--metricks-border-color);
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; 
+}
+
+.diskRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.diskHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.diskLabel {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.diskValue {
+  font-size: 14px;
+  margin-right: 20%;
+  color: var(--secondary-text-color);
+  font-weight: 400;
+}
+
+.progressContainer {
+  width: 100%;
+  height: 4px;
+  background-color: var(--progress-bar-bg-color);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: var(--light-blue);
+  border-radius: 100px;
+}
+
+.diskValue {
+  font-size: 12px;
+  color: var(--secondary-text-color);
+  min-width: 100px;
+  text-align: right;
+}
+
+/* Сетка метрик */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9rem;
+  padding: 10%;
+}
+
+.metricCard {
+  background-color: var(--metricks-bg-color);
+  border: 1px solid var(--metricks-border-color);
+  border-radius: 20px;
+  padding: 25px;
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.metricLabel {
+  font-size: 14px;
+  color: var(--secondary-text-color);
+}
+
+.metricValue {
+  font-size: 31px;
+  font-weight: 700;
+}
+
+/* Секция с графиком */
+.chartSection {
+  background-color: var(--metricks-bg-color);
+  border: 1px solid var(--metricks-border-color);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chartWrapper {
+  display: flex;
+  gap: 16px;
+  position: relative;
+  width: 100%;
+}
+
+.chartYAxis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100px;
+}
+
+.chartYAxis span {
+  font-size: 11px;
+  color: var(--secondary-text-color);
+  text-align: right;
+  min-width: 32px;
+  line-height: 1;
+}
+
+.chartBody {
+  flex-grow: 1;
+  position: relative;
+  height: 100px;
+}
+
+.chartSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.gridLine {
+  stroke: var(--chart-grid-color);
+  stroke-width: 1;
+}
+
+.chartTimeline {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-left: 48px;
+  box-sizing: border-box;
+}
+
+.chartTimeline span {
+  font-size: 11px;
+  color: var(--secondary-text-color);
+}

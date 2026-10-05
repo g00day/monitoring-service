@@ -1,7 +1,7 @@
 .MainStubSection {
   background-color: var(--main-stub-bg-color);
   color: white;
-  padding:6rem;
+  padding: 3rem 6rem;
   font-family: system-ui, -apple-system, sans-serif;
   width: 50%;
   height: 100%;
@@ -41,7 +41,7 @@
   border: 1px solid var(--metricks-border-color);
   border-radius: 8px;
   padding: 24px;
-  margin-top: 100px;
+  margin-top: 75px;
   display: flex;
   flex-direction: column;
   gap: 20px; 

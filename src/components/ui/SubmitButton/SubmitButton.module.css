@@ -1,0 +1,32 @@
+.submitButton {
+  background-color: #1d4ed8;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  text-align: left;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  font-family: inherit;
+  display: flex;
+  align-items: left;
+  justify-content: left;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: var(--submit-btn-bg);
+}
+
+.submitButton:active:not(:disabled) {
+  background-color: #1e40af;
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+

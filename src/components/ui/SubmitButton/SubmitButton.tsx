@@ -2,13 +2,14 @@ import { ComponentPropsWithoutRef } from "react";
 import styles from "./SubmitButton.module.css";
 
 interface SubmitButtonProps extends ComponentPropsWithoutRef<"button"> {
+  coloringType: "submit" | "cancel"; 
 }
 
-const SubmitButton = ({ children, className, disabled, ...props }: SubmitButtonProps) => {
+const SubmitButton = ({ children, coloringType, className, disabled, ...props }: SubmitButtonProps) => {
   return (
     <button
       type="submit"
-      className={`${styles.submitButton} ${className || ""}`}
+      className={`${styles.submitButton} ${coloringType == "submit" ? styles.blueBtn : styles.redBtn} ${className || ""}`}
       disabled={disabled}
       {...props}
     >

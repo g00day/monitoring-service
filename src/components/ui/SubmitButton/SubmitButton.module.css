@@ -1,5 +1,4 @@
 .submitButton {
-  background-color: #1d4ed8;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -17,13 +16,34 @@
   justify-content: left;
 }
 
-.submitButton:hover:not(:disabled) {
+
+.blueBtn {
   background-color: var(--submit-btn-bg);
 }
 
-.submitButton:active:not(:disabled) {
-  background-color: #1e40af;
+.blueBtn:hover {
+  background-color: var(--submit-btn-hover-bg);
 }
+
+
+.redBtn {
+  background-color: var(--cancel-btn-bg)
+}
+
+.redBtn:hover {
+  background-color: var(--cancel-btn-hover-bg);
+}
+
+
+
+.blueBtn:hover:not(:disabled) {
+  background-color: var(--submit-btn-hover-bg);
+}
+
+.blueBtn:active:not(:disabled) {
+  background-color: var(--submit-btn-hover-bg);
+}
+
 
 .submitButton:disabled {
   opacity: 0.6;

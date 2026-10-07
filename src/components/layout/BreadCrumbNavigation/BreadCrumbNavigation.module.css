@@ -1,0 +1,42 @@
+.breadcrumbsContainer {
+  width: 100%;
+  background-color: var(--bg-color);
+  border-bottom: 1px solid var(--metricks-border-color);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 32px;
+}
+
+.item {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 400;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.item:hover {
+  color: #94a3b8;
+}
+
+.separator {
+  font-size: 13px;
+  color: #475569;
+  user-select: none;
+}
+
+.itemActive {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 400;
+  user-select: none;
+}

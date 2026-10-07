@@ -30,7 +30,7 @@ const AuthFormSection = () => {
                     type="password" 
                 />
                 
-                <SubmitButton>
+                <SubmitButton coloringType="submit">
                     Войти в систему
                 </SubmitButton>
 

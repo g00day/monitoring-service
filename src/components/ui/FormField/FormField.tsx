@@ -3,9 +3,10 @@ import styles from "./FormField.module.css";
 
 interface FormFieldProps extends ComponentPropsWithoutRef<"input"> {
   label?: string;
+  padding?: string;
 }
 
-const FormField = ({ label, id, ...props }: FormFieldProps) => {
+const FormField = ({ label, id, padding="16px", ...props }: FormFieldProps) => {
   return (
     <div className={styles.container}>
       {label && (
@@ -16,6 +17,7 @@ const FormField = ({ label, id, ...props }: FormFieldProps) => {
       <input
         id={id}
         className={styles.input}
+        style={{ padding: padding }}
         {...props}
       />
     </div>

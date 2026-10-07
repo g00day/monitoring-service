@@ -1,0 +1,241 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, sans-serif;
+  gap: 24px;
+}
+
+/* Верхняя строка истории показателей */
+.historyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.sectionTitle {
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Табы переключения периодов */
+.tabsContainer {
+  background-color: var(--metricks-bg-color);
+  border: 1px solid var(--metricks-border-color);
+  border-radius: 8px;
+  padding: 4px;
+  display: flex;
+  gap: 4px;
+}
+
+.tabButton {
+  background: none;
+  border: none;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tabButton:hover {
+  color: #64748b;
+}
+
+.tabButtonActive {
+  background-color: var(--submit-btn-bg);
+  color: #ffffff !important;
+}
+
+/* Сетка графиков */
+.chartsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  width: 100%;
+}
+
+.chartSection {
+  background-color: var(--metricks-bg-color);
+  border: 1px solid var(--metricks-border-color);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chartTitle {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+}
+
+.chartWrapper {
+  display: flex;
+  gap: 16px;
+  position: relative;
+  width: 100%;
+}
+
+.chartYAxis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100px;
+}
+
+.chartYAxis span {
+  font-size: 11px;
+  color: var(--secondary-text-color, #475569);
+  text-align: right;
+  min-width: 32px;
+  line-height: 1;
+}
+
+.chartBody {
+  flex-grow: 1;
+  position: relative;
+  height: 100px;
+}
+
+.chartSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.gridLine {
+  stroke: var(--chart-grid-color, rgba(255, 255, 255, 0.05));
+  stroke-width: 1;
+}
+
+.chartTimeline {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-left: 48px;
+  box-sizing: border-box;
+}
+
+.chartTimeline span {
+  font-size: 11px;
+  color: var(--secondary-text-color, #475569);
+}
+
+/* Сетка нижних информационных панелей */
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  width: 100%;
+}
+
+.detailsCard {
+  background-color: var(--metricks-bg-color);
+  border: 1px solid var(--metricks-border-color);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cardHeaderTitle {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Секция Файловых Систем */
+.diskSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.diskRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.diskHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.diskLabel {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.diskValue {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 400;
+}
+
+.progressContainer {
+  width: 100%;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: var(--light-blue);
+  border-radius: 100px;
+}
+
+/* Секция Отслеживаемых Служб */
+.servicesList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.serviceRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.serviceRow:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.serviceName {
+  font-size: 14px;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.serviceStatus {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.running {
+  color: var(--online-label-color, #55D6A6);
+}
+
+.stopped {
+  color: #d97706;
+}

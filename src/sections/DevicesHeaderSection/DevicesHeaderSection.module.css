@@ -1,0 +1,106 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Кнопка возврата */
+.backButton {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  margin-bottom: 16px;
+  width: fit-content;
+  transition: color 0.2s ease;
+}
+
+.backButton:hover {
+  color: #94a3b8;
+}
+
+/* Строка с заголовком и кнопкой управления */
+.mainRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 32px;
+  gap: 24px;
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.title {
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.timestamp {
+  color: #475569;
+  font-size: 12px;
+  margin: 0;
+}
+
+.buttonWrapper {
+  display: flex;
+  gap: 12px;          
+  align-items: center;
+  flex-shrink: 0;     
+}
+
+.buttonWrapper > button,
+.buttonWrapper :global(button) {
+  width: auto;
+  padding: 12px 20px; 
+}
+
+
+
+/* Сетка карточек метрик */
+.metricsGrid {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+}
+
+.metricCard {
+  background-color: var(--metricks-bg-color);
+  border: 1px solid var(--metricks-border-color);
+  border-radius: 8px;
+  padding: 24px;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.metricLabel {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.metricValue {
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}

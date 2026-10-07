@@ -2,7 +2,7 @@ import { ComponentPropsWithoutRef } from "react";
 import styles from "./SubmitButton.module.css";
 
 interface SubmitButtonProps extends ComponentPropsWithoutRef<"button"> {
-  coloringType?: string; 
+  coloringType: "submit" | "cancel"; 
 }
 
 const SubmitButton = ({ children, coloringType, className, disabled, ...props }: SubmitButtonProps) => {

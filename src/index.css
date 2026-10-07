@@ -20,6 +20,12 @@
     --cancel-btn-hover-bg: #b73e3ec9;
 
     --popup-cta-coloring: #B9CEFF;
+
+    --online-label-bg: #15332E;
+    --online-label-color: #55D6A6;
+
+    --offline-label-bg: #401D24;
+    --offline-label-color: #DA1F1F;
 }
 
 * {

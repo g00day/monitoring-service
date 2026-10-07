@@ -1,0 +1,107 @@
+.sidebar {
+  width: 20%;
+  height: 100vh;
+  background-color: var(--bg-color);
+  border-right: 1px solid var(--metricks-border-color);
+  padding: 32px 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Шапка сайдбара */
+.topSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.logoWrapper {
+  width: 40px;
+  height: 40px;
+  background-color: var(--light-blue);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logoWrapper img {
+  width: 24px;
+  height: auto;
+}
+
+.serviceTitle {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* Блок навигации */
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
+}
+
+.menuLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 0.05em;
+}
+
+.menuItemActive {
+  background-color: var(--metricks-bg-color);
+  border: 1px solid var(--metricks-border-color);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 14px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Подвал сайдбара */
+.footerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: auto;
+}
+
+.profileBadge {
+  background-color: var(--metricks-bg-color);
+  border: 1px solid var(--metricks-border-color);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  padding: 16px;
+  border-radius: 8px;
+  user-select: none;
+}
+
+.logoutButton {
+  background: none;
+  border: none;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 400;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  font-family: inherit;
+}
+
+.logoutButton:hover {
+  color: #64748b;
+}

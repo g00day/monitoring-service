@@ -3,9 +3,13 @@ import BreadCrumbNavigation from "@layout/BreadCrumbNavigation/BreadCrumbNavigat
 import DevicesHeaderSection from "@sections/DevicesHeaderSection/DevicesHeaderSection";
 import DevicesBottomSection from "@sections/DevicesBottomSection/DevicesBottomSection";
 
+import { useAuthProtected } from "../../hooks/useAuthProtected";
+
 const direction = "Рабочая область/Устройства/Основной сервер";
 
 const DevicesPage = () => {
+  const { isChecking } = useAuthProtected(); // проверка аутентификации
+
   const breadCrumbItems = direction.split("/").map((item) => ({
     direction: item,
   }));
@@ -29,6 +33,9 @@ const DevicesPage = () => {
     { name: "systemd-journald.service", status: "running" as const },
     { name: "snapd.service", status: "stopped" as const },
   ];
+
+  // Если сессия еще проверяется, блокируем построение DOM-дерева страницы
+  if (isChecking) return null;
 
   return (
     <div style={{ display: "flex", width: "100%", minHeight: "100vh", backgroundColor: "var(--bg-color)" }}>

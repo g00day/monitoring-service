@@ -20,6 +20,7 @@ export default defineConfig({
       '@ui': path.resolve(__dirname, "./src/components/ui"),
       '@layout':  path.resolve(__dirname, './src/components/layout'),
       '@sections': path.resolve(__dirname, './src/sections'),
+      '@hooks': path.resolve(__dirname, "./src/hooks")
     },
   },
 })

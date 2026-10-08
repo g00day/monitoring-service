@@ -7,6 +7,9 @@ import Popup from "@ui/Popup/Popup";
 import FormField from "@ui/FormField/FormField";
 import SubmitButton from "@ui/SubmitButton/SubmitButton";
 
+
+import { useAuthProtected } from "@hooks/useAuthProtected";
+
 const direction = "Рабочая область/Устройства";
 
 type ActiveModal = 
@@ -16,6 +19,8 @@ type ActiveModal =
   | { type: "RENAME_DEVICE"; deviceId: string | number };
 
 const Dashboard = () => {
+  const { isChecking } = useAuthProtected(); // проверка аутентификации
+
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeModal, setActiveModal] = useState<ActiveModal>({ type: "NONE" });
   
@@ -33,6 +38,9 @@ const Dashboard = () => {
   const breadCrumbItems = direction.split("/").map((item: string) => ({
     direction: item,
   }));
+
+  // Если сессия еще проверяется, блокировка построения DOM-дерева страницы
+  if (isChecking) return null;
 
   const handleOpenCreateModal = () => {
     setPopupError(null);

@@ -1,41 +1,7 @@
 import { useState } from "react";
 import styles from "./DevicesBottomSection.module.css";
 
-interface MetricHistoryChartProps {
-  title: string;
-  lineColor: string;
-  points: string;
-}
-
-const MetricHistoryChart = ({ title, lineColor, points }: MetricHistoryChartProps) => {
-  return (
-    <div className={styles.chartSection}>
-      <h3 className={styles.chartTitle}>{title}</h3>
-      <div className={styles.chartWrapper}>
-        <div className={styles.chartYAxis}>
-          <span>100%</span>
-          <span>50%</span>
-          <span>0%</span>
-        </div>
-        <div className={styles.chartBody}>
-          <svg viewBox="0 0 500 100" className={styles.chartSvg} preserveAspectRatio="none">
-            <line x1="0" y1="10" x2="500" y2="10" className={styles.gridLine} />
-            <line x1="0" y1="50" x2="500" y2="50" className={styles.gridLine} />
-            <line x1="0" y1="90" x2="500" y2="90" className={styles.gridLine} />
-            <polyline fill="none" stroke={lineColor} strokeWidth="2" points={points} />
-          </svg>
-        </div>
-      </div>
-      <div className={styles.chartTimeline}>
-        <span>18:00</span>
-        <span>00:00</span>
-        <span>06:00</span>
-        <span>12:00</span>
-        <span>18:00</span>
-      </div>
-    </div>
-  );
-};
+import MetricHistoryChart from "./MetricHistoryChart";
 
 interface DiskItem {
   label: string;
@@ -51,9 +17,11 @@ interface ServiceItem {
 interface DevicesBottomSectionProps {
   disks: DiskItem[];
   services: ServiceItem[];
+  cpuPoints: string;
+  ramPoints: string;
 }
 
-const DevicesBottomSection = ({ disks, services }: DevicesBottomSectionProps) => {
+const DevicesBottomSection = ({ disks, services, cpuPoints, ramPoints }: DevicesBottomSectionProps) => {
   const [activeTab, setActiveTab] = useState<string>("24 часа");
   const tabs = ["1 час", "6 часов", "24 часа", "Период"];
 
@@ -81,12 +49,12 @@ const DevicesBottomSection = ({ disks, services }: DevicesBottomSectionProps) =>
         <MetricHistoryChart
           title="CPU"
           lineColor="#4f46e5"
-          points="0,60 25,25 45,65 65,25 80,85 105,45 130,25 155,60 185,75 215,25 240,40 265,55 290,30 315,45 340,85 365,85 390,45 420,25 450,55 470,35 500,60"
+          points={cpuPoints || "0,90 500,90"}
         />
         <MetricHistoryChart
           title="Память"
           lineColor="#14b8a6"
-          points="0,60 25,25 45,65 65,25 80,85 105,45 130,25 155,60 185,75 215,25 240,40 265,55 290,30 315,45 340,85 365,85 390,45 420,25 450,55 470,35 500,60"
+          points={ramPoints || "0,90 500,90"}
         />
       </div>
 

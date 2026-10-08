@@ -30,7 +30,11 @@ const DevicesHeaderSection = ({
 }: DevicesHeaderSectionProps) => {
   return (
     <section className={styles.container}>
-      <button type="button" className={styles.backButton} onClick={onBackClick}>
+      <button 
+        type="button" 
+        className={styles.backButton} 
+        onClick={onBackClick || (() => window.location.replace("/dashboard"))}
+      >
         ← Все устройства
       </button>
 

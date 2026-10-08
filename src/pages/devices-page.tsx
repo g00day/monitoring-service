@@ -3,7 +3,7 @@ import BreadCrumbNavigation from "@layout/BreadCrumbNavigation/BreadCrumbNavigat
 import DevicesHeaderSection from "@sections/DevicesHeaderSection/DevicesHeaderSection";
 import DevicesBottomSection from "@sections/DevicesBottomSection/DevicesBottomSection";
 
-import { useAuthProtected } from "../../hooks/useAuthProtected";
+import { useAuthProtected } from "@hooks/useAuthProtected";
 
 const direction = "Рабочая область/Устройства/Основной сервер";
 

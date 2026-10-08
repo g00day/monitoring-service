@@ -1,6 +1,6 @@
 import axios from "axios";
 import { apiClient } from "../../apiClient";
-import { 
+import type { 
   CreateDeviceDto, 
   RenameDeviceDto, 
   UpdateAgentTokenDto, 

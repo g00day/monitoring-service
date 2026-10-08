@@ -47,3 +47,28 @@ export interface ApiErrorResponse {
     type: string;
   }>;
 }
+
+
+export interface HistoryPoint {
+  bucket_start: ISODateTime;
+  samples: number;
+  cpu_percent: number | null;
+  cpu_max_percent: number | null;
+  memory_used_bytes: number | null;
+  memory_total_bytes: number | null;
+  disks: DiskMetrics[] | null;
+}
+
+export interface MetricsHistory {
+  device_id: number;
+  start: ISODateTime;
+  end: ISODateTime;
+  step_seconds: number;
+  points: HistoryPoint[];
+}
+
+export interface GetMetricsHistoryParams {
+  start?: ISODateTime;
+  end?: ISODateTime;
+  max_points?: number; // Допустимый диапазон: 1-1000, по умолчанию 500
+}

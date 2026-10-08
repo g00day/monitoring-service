@@ -1,6 +1,6 @@
 import axios from "axios";
 import { apiClient } from "../../apiClient"; 
-import { LoginCredentials, LoginResponse, ApiErrorResponse } from "./loginClient.types";
+import type { LoginCredentials, LoginResponse, ApiErrorResponse } from "./loginClient.types";
 
 export const loginClient = {
   /**

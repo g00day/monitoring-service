@@ -1,6 +1,6 @@
 import axios from "axios";
-import { apiClient } from "../../apiClient"; // Укажите правильный относительный путь к вашему общему apiClient
-import { ApiErrorResponse } from "./logoutClient.types";
+import { apiClient } from "../../apiClient";
+import type { ApiErrorResponse } from "./logoutClient.types";
 
 export const logoutClient = {
   /**

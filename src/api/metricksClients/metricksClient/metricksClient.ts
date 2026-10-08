@@ -1,6 +1,6 @@
 import axios from "axios";
 import { apiClient } from "../../apiClient";
-import { MetricsHistory, GetMetricsHistoryParams, ApiErrorResponse } from "./metricksClient.types";
+import type { MetricsHistory, GetMetricsHistoryParams, ApiErrorResponse } from "./metricksClient.types";
 
 
 export const metricksClient = {

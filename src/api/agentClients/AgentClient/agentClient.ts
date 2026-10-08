@@ -1,6 +1,6 @@
 import axios from "axios";
 import { apiClient } from "../../apiClient";
-import { AgentMetricsPayload, VerifyAgentResponse, ApiErrorResponse } from "./agentClient.types";
+import type { AgentMetricsPayload, VerifyAgentResponse, ApiErrorResponse } from "./agentClient.types";
 
 
 export const createAgentClient = (agentToken: string) => {

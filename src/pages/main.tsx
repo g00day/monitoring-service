@@ -1,7 +1,16 @@
+import { useEffect } from "react";
 import MainStubSection from "@sections/MainStubSection/MainStubSection";
 import AuthFormSection from "@sections/AuthFormSection/AuthFormSection";
 
 const Main = () => {
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    
+    if (token) {
+      // редирект в случае если пользователь уже вошёл
+      window.location.replace("/dashboard");
+    }
+  }, []);
 
   return (
     <div
@@ -20,7 +29,6 @@ const Main = () => {
       <AuthFormSection />
     </div>
   );
-  
 };
 
 export default Main;

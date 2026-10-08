@@ -44,8 +44,9 @@ const DevicesPage = () => {
             statusText="Онлайн"
             lastMeasurement="01.10.2026, 18:06:08"
             metrics={mockMetrics}
-            onRename={() => console.log("Rename clicked")}
-            onBackClick={() => console.log("Back clicked")}
+            onRename={() => console.log("Открыть модалку переименования")}
+            onChangeAgentToken={() => console.log("Открыть модалку изменения токена")}
+            onBackClick={() => window.location.replace("/dashboard")} // Ссылка-редирект на главную панель
           />
           
           <DevicesBottomSection 

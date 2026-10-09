@@ -1,4 +1,9 @@
-import { useState, FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { devicesApiClient } from "@api/devicesClients/deviceClient/deviceClient";
+import type { DeviceResponse } from "@api/devicesClients/deviceClient/deviceClient.types";
+import { apiErrorMessage } from "@utils/apiErrorMessage";
+import { formatMemory } from "@utils/formatMetrics";
 import BreadCrumbNavigation from "@layout/BreadCrumbNavigation/BreadCrumbNavigation";
 import GeneralSidebar from "@layout/GeneralSidebar/GeneralSidebar";
 import DevicesMainSection from "@sections/DevicesMainSection/DevicesMainSection";
@@ -14,9 +19,7 @@ const direction = "Рабочая область/Устройства";
 
 type ActiveModal = 
   | { type: "NONE" }
-  | { type: "CREATE_DEVICE" }
-
-  | { type: "RENAME_DEVICE"; deviceId: string | number };
+  | { type: "CREATE_DEVICE" };
 
 const Dashboard = () => {
   const { isChecking } = useAuthProtected(); // проверка аутентификации
@@ -24,12 +27,55 @@ const Dashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeModal, setActiveModal] = useState<ActiveModal>({ type: "NONE" });
   
-  const [devices, setDevices] = useState([
-    { id: 1, name: "Основной сервер", status: "online" as const, statusText: "Онлайн", cpu: "25,9%", ram: "8,2 / 16 ГБ", time: "12 секунд назад" },
-    { id: 2, name: "Рабочий компьютер", status: "online" as const, statusText: "Онлайн", cpu: "17,8%", ram: "27,1 / 31,3 ГБ", time: "24 секунды назад" },
-    { id: 3, name: "Linux - WSL", status: "online" as const, statusText: "Онлайн", cpu: "0,5%", ram: "1,2 / 15,3 ГБ", time: "8 секунд назад" },
-    { id: 4, name: "Учебный ноутбук", status: "offline" as const, statusText: "Офлайн", cpu: "—", ram: "—", time: "23 минуты назад" },
-  ]);
+  const navigate = useNavigate();
+  const [devices, setDevices] = useState<DeviceResponse[]>([]);
+  const [search, setSearch] = useState("");
+  const [offset, setOffset] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [onlineCount, setOnlineCount] = useState(0);
+  const [offlineCount, setOfflineCount] = useState(0);
+  const [pageError, setPageError] = useState<string | null>(null);
+  const [isMutating, setIsMutating] = useState(false);
+  const requestId = useRef(0);
+  const invalidateRequests = useCallback(() => { requestId.current++; }, []);
+  const limit = 10;
+
+  const loadDevices = useCallback(async () => {
+    const id = ++requestId.current;
+    setIsRefreshing(true);
+    try {
+      const [page, online, offline] = await Promise.all([
+        devicesApiClient.getDevices({ limit, offset, search }),
+        devicesApiClient.getDevices({ limit: 1, search, status: "online" }),
+        devicesApiClient.getDevices({ limit: 1, search, status: "offline" }),
+      ]);
+      if (id !== requestId.current) return;
+      if (offset > 0 && offset >= page.total) {
+        setOffset(Math.max(0, Math.ceil(page.total / limit) - 1) * limit);
+        return;
+      }
+      setDevices(page.devices);
+      setTotalCount(page.total);
+      setOnlineCount(online.total);
+      setOfflineCount(offline.total);
+      setPageError(null);
+    } catch (error) {
+      if (id === requestId.current) setPageError(apiErrorMessage(error));
+    } finally {
+      if (id === requestId.current) setIsRefreshing(false);
+    }
+  }, [offset, search]);
+
+  useEffect(() => {
+    if (isChecking) return;
+    const debounce = window.setTimeout(() => void loadDevices(), 250);
+    const timer = window.setInterval(() => void loadDevices(), 30000);
+    return () => {
+      window.clearTimeout(debounce);
+      window.clearInterval(timer);
+      invalidateRequests();
+    };
+  }, [isChecking, loadDevices, invalidateRequests]);
 
   const [deviceName, setDeviceName] = useState("");
   const [agentToken, setAgentToken] = useState("");
@@ -49,22 +95,16 @@ const Dashboard = () => {
     setActiveModal({ type: "CREATE_DEVICE" });
   };
 
-  // открытие модалки СТРОГО по клику на строку устройства
   const handleDeviceRowClick = (id: string | number) => {
-    const targetDevice = devices.find(d => d.id === id);
-    if (!targetDevice) return;
-
-    setPopupError(null);
-    setDeviceName(targetDevice.name); // Предзаполняем текущее имя в инпут
-    setActiveModal({ type: "RENAME_DEVICE", deviceId: id });
+    navigate(`/devices/${id}`);
   };
 
   const handleCloseModal = () => {
+    if (isMutating) return;
     setActiveModal({ type: "NONE" });
   };
 
-  // Локальное сохранение изменений в стейт массива
-  const handleModalSubmit = (e: FormEvent) => {
+  const handleModalSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!deviceName) {
       setPopupError("Название устройства не может быть пустым");
@@ -77,33 +117,31 @@ const Dashboard = () => {
         return;
       }
       
-      const newDevice = {
-        id: Date.now(), 
-        name: deviceName,
-        status: "offline" as const,
-        statusText: "Офлайн",
-        cpu: "—",
-        ram: "—",
-        time: "Только что добавлен"
-      };
-      setDevices(prev => [...prev, newDevice]);
-
-    } else if (activeModal.type === "RENAME_DEVICE") {
-      setDevices(prev => prev.map(d => d.id === activeModal.deviceId ? { ...d, name: deviceName } : d));
+      setIsMutating(true);
+      setPopupError(null);
+      try {
+        const device = await devicesApiClient.createDevice({ name: deviceName, agent_token: agentToken });
+        setActiveModal({ type: "NONE" });
+        navigate(`/devices/${device.id}`);
+      } catch (error) {
+        setPopupError(apiErrorMessage(error));
+      } finally {
+        setIsMutating(false);
+      }
     }
-
-    setActiveModal({ type: "NONE" });
   };
 
   const handleRefresh = () => {
-    setIsRefreshing(true);
-    setTimeout(() => setIsRefreshing(false), 800);
+    void loadDevices();
   };
 
-  // Расчет счетчиков на основе локального стейта
-  const totalCount = devices.length;
-  const onlineCount = devices.filter(d => d.status === "online").length;
-  const offlineCount = devices.filter(d => d.status === "offline").length;
+  const deviceItems = devices.map((device) => ({
+    ...device,
+    statusText: device.status === "online" ? "Онлайн" : "Офлайн",
+    cpu: device.latest_metrics?.cpu_percent == null ? "—" : `${device.latest_metrics.cpu_percent}%`,
+    ram: formatMemory(device.latest_metrics?.memory_used_bytes, device.latest_metrics?.memory_total_bytes),
+    time: device.last_seen_at ? new Date(device.last_seen_at).toLocaleString() : "Нет данных",
+  }));
 
   return (
     <div style={{ display: "flex", width: "100%", minHeight: "100vh", backgroundColor: "var(--bg-color)" }}>
@@ -113,8 +151,9 @@ const Dashboard = () => {
         <BreadCrumbNavigation BreadCrumbItems={breadCrumbItems} />
 
         <main style={{ padding: "32px", flexGrow: 1, display: "flex", flexDirection: "column", gap: "32px" }}>
+          {pageError && <p role="alert" style={{ color: "var(--offline-label-color)" }}>{pageError}</p>}
           <DevicesMainSection
-            devices={devices}
+            devices={deviceItems}
             totalCount={totalCount}
             onlineCount={onlineCount}
             offlineCount={offlineCount}
@@ -122,14 +161,21 @@ const Dashboard = () => {
             onRefresh={handleRefresh}
             onDeviceClick={handleDeviceRowClick}
             isRefreshing={isRefreshing}
+            searchValue={search}
+            onSearchChange={(value) => { setSearch(value); setOffset(0); }}
           />
+          {!isRefreshing && !pageError && devices.length === 0 && <p style={{ color: "var(--secondary-text-color)" }}>Устройства не найдены</p>}
+          <div style={{ display: "flex", gap: "16px" }}>
+            <SubmitButton coloringType="submit" disabled={offset === 0 || isRefreshing} onClick={() => setOffset(Math.max(0, offset - limit))}>Назад</SubmitButton>
+            <SubmitButton coloringType="submit" disabled={offset + limit >= totalCount || isRefreshing} onClick={() => setOffset(offset + limit)}>Далее</SubmitButton>
+          </div>
         </main>
       </div>
 
       <Popup
         isOpen={activeModal.type !== "NONE"}
         onClose={handleCloseModal}
-        title={activeModal.type === "CREATE_DEVICE" ? "Добавить устройство" : "Редактировать устройство"}
+        title="Добавить устройство"
         footerButtons={
           <>
             <button
@@ -149,11 +195,12 @@ const Dashboard = () => {
               Отмена
             </button>
             <SubmitButton
+              isLoading={isMutating}
               onClick={handleModalSubmit}
               coloringType="submit"
               style={{ width: "auto", padding: "12px 24px" }}
             >
-              {activeModal.type === "CREATE_DEVICE" ? "Добавить" : "Сохранить изменения"}
+              Добавить
             </SubmitButton>
           </>
         }

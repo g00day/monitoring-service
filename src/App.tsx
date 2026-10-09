@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 // pages 
 import Main from '@pages/main';
@@ -11,8 +11,10 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="my-devices/" element={<DevicesPage />}/>
+        <Route path="devices/:deviceId" element={<DevicesPage />}/>
+        <Route path="my-devices/" element={<Navigate to="/dashboard" replace />}/>
         <Route path="dashboard/" element={<Dashboard/>}/>
+        <Route path="*" element={<Navigate to="/dashboard" replace />}/>
       </Routes>
     </BrowserRouter>
   )

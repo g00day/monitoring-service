@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { apiErrorMessage } from "@utils/apiErrorMessage";
+import { formatMemory } from "@utils/formatMetrics";
+import { onlineTimeoutSeconds } from "@/config";
 import GeneralSidebar from "@layout/GeneralSidebar/GeneralSidebar";
 import BreadCrumbNavigation from "@layout/BreadCrumbNavigation/BreadCrumbNavigation";
 import DevicesHeaderSection from "@sections/DevicesHeaderSection/DevicesHeaderSection";
@@ -18,8 +22,6 @@ import type { DeviceResponse, MetricsHistory } from "@api/devicesClients/deviceC
 import { useAuthProtected } from "@hooks/useAuthProtected";
 
 
-const direction = "Рабочая область/Устройства/Основной сервер";
-
 // Полиморфный стейт для управления контекстом модальных окон
 type ActiveModalContext = 
   | { type: "NONE" }
@@ -30,8 +32,11 @@ const DevicesPage = () => {
   // Инициализация хука защиты сессии: мгновенный редирект, если токен стерт
   const { isChecking } = useAuthProtected();
 
-  // Идентификатор целевого устройства. В будущем может читаться через useParams() вашего роутера
-  const deviceId = 1; 
+  const { deviceId = "" } = useParams();
+  const [pageError, setPageError] = useState<string | null>(null);
+  const [period, setPeriod] = useState<{ hours?: number; start?: string; end?: string }>({ hours: 0.25 });
+  const requestId = useRef(0);
+  const invalidateRequests = useCallback(() => { requestId.current++; }, []);
 
   // Состояния для хранения актуальных агрегированных данных бэкенда
   const [deviceData, setDeviceData] = useState<DeviceResponse | null>(null);
@@ -45,32 +50,36 @@ const DevicesPage = () => {
   const [inputToken, setInputToken] = useState("");
   const [modalError, setModalError] = useState<string | null>(null);
 
-  const breadCrumbItems = direction.split("/").map((item) => ({
+  const breadCrumbItems = ["Рабочая область", "Устройства", deviceData?.name || "Устройство"].map((item) => ({
     direction: item,
   }));
 
-  // Высокопроизводительный параллельный запрос данных сервера и его истории (Promise.all)
-  const fetchDeviceDetails = async () => {
+  const fetchDeviceDetails = useCallback(async () => {
+    const id = ++requestId.current;
     try {
+      const end = period.end || new Date().toISOString();
+      const start = period.start || new Date(Date.parse(end) - (period.hours || 24) * 3600000).toISOString();
       const [device, history] = await Promise.all([
         devicesApiClient.getDeviceById(deviceId),
-        devicesApiClient.getMetricsHistory(deviceId, { max_points: 500 })
+        devicesApiClient.getMetricsHistory(deviceId, { max_points: 500, start, end })
       ]);
-
+      if (id !== requestId.current) return;
       setDeviceData(device);
       setMetricsHistory(history);
+      setPageError(null);
     } catch (error) {
-      console.error("Критическая ошибка при получении данных устройства:", error);
+      if (id === requestId.current) setPageError(apiErrorMessage(error));
     } finally {
-      setPageLoading(false);
+      if (id === requestId.current) setPageLoading(false);
     }
-  };
+  }, [deviceId, period]);
 
   useEffect(() => {
-    if (!isChecking) {
-      fetchDeviceDetails();
-    }
-  }, [isChecking]);
+    if (isChecking) return;
+    const initialLoad = window.setTimeout(() => void fetchDeviceDetails(), 0);
+    const timer = window.setInterval(() => void fetchDeviceDetails(), 30000);
+    return () => { window.clearTimeout(initialLoad); window.clearInterval(timer); invalidateRequests(); };
+  }, [isChecking, fetchDeviceDetails, invalidateRequests]);
 
   // Коллбэки декларативного открытия окон управления
   const handleOpenRename = () => {
@@ -120,31 +129,32 @@ const DevicesPage = () => {
   };
 
   // Защитный барьер: прерываем рендеринг DOM, пока идет проверка сессии или загрузка API
-  if (isChecking || pageLoading) return null;
+  if (isChecking || (pageLoading && !deviceData)) return <p style={{ color: "white", padding: 32 }}>Загрузка…</p>;
+  if (!deviceData) return <div style={{ color: "white", padding: 32 }}><p role="alert">{pageError || "Устройство не найдено"}</p><Link to="/dashboard">К списку устройств</Link></div>;
 
   const latestMetrics = deviceData?.latest_metrics;
   const historyPoints = metricsHistory?.points || [];
 
   // 1. Динамический расчет строки точек для графика CPU (среднее значение cpu_percent)
-  const cpuSvgPoints = generateSvgPoints(historyPoints, (p) => p.cpu_percent);
+  const cpuSvgPoints = generateSvgPoints(historyPoints, (p) => p.cpu_percent, metricsHistory, onlineTimeoutSeconds);
 
   // 2. Динамический расчет строки точек для графика RAM с переводом байт в проценты
   const ramSvgPoints = generateSvgPoints(historyPoints, (p) => {
-    if (!p.memory_used_bytes || !p.memory_total_bytes) return null;
+    if (p.memory_used_bytes == null || !p.memory_total_bytes) return null;
     return (p.memory_used_bytes / p.memory_total_bytes) * 100;
-  });
+  }, metricsHistory, onlineTimeoutSeconds);
 
   // Безопасный маппинг сырых байт и чисел из API под интерфейсы UI-компонентов шапки
   const headerMetrics = [
-    { label: "Загрузка CPU", value: latestMetrics?.cpu_percent !== null ? `${latestMetrics?.cpu_percent}%` : "—" },
-    { label: "Оперативная память", value: latestMetrics?.memory_used_bytes ? `${(latestMetrics.memory_used_bytes / (1024 ** 3)).toFixed(1)} / ${(latestMetrics.memory_total_bytes / (1024 ** 3)).toFixed(1)} ГБ` : "—" },
-    { label: "Файловые системы", value: latestMetrics?.disks?.length || 0 },
+    { label: "Загрузка CPU", value: latestMetrics?.cpu_percent == null ? "—" : `${latestMetrics.cpu_percent}%` },
+    { label: "Оперативная память", value: formatMemory(latestMetrics?.memory_used_bytes, latestMetrics?.memory_total_bytes) },
+    { label: "Файловые системы", value: latestMetrics?.disks?.length ?? "—" },
   ];
 
   // Конвертация мегабайт и процентов для прогресс-баров накопителей
   const processedDisks = latestMetrics?.disks?.map((disk) => ({
     label: disk.name,
-    value: `${(disk.disk_used_bytes / (1024 ** 3)).toFixed(1)} ГБ / ${(disk.disk_total_bytes / (1024 ** 3)).toFixed(1)} ГБ`,
+    value: `${(disk.disk_used_bytes / (1024 ** 3)).toFixed(1)} ГиБ / ${(disk.disk_total_bytes / (1024 ** 3)).toFixed(1)} ГиБ`,
     percentage: disk.disk_total_bytes ? (disk.disk_used_bytes / disk.disk_total_bytes) * 100 : 0
   })) || [];
 
@@ -152,7 +162,7 @@ const DevicesPage = () => {
   const processedServices = latestMetrics?.services 
     ? Object.entries(latestMetrics.services).map(([name, status]) => ({
         name,
-        status: status === "running" ? ("running" as const) : ("stopped" as const)
+        status
       }))
     : [];
 
@@ -165,6 +175,7 @@ const DevicesPage = () => {
         <BreadCrumbNavigation BreadCrumbItems={breadCrumbItems} />
         
         <main style={{ padding: "32px", flexGrow: 1, display: "flex", flexDirection: "column", gap: "32px" }}>
+          {pageError && <p role="alert" style={{ color: "var(--offline-label-color)" }}>{pageError}. Показаны последние загруженные данные.</p>}
           <DevicesHeaderSection 
             title={deviceData?.name || "Загрузка..."}
             status={deviceData?.status || "offline"}
@@ -181,6 +192,10 @@ const DevicesPage = () => {
             services={processedServices}
             cpuPoints={cpuSvgPoints}
             ramPoints={ramSvgPoints}
+            historyStart={metricsHistory?.start}
+            historyEnd={metricsHistory?.end}
+            historyPoints={historyPoints}
+            onPeriodChange={setPeriod}
           />
         </main>
       </div>

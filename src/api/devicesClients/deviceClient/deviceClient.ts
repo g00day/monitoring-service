@@ -12,6 +12,15 @@ import type {
 } from "./deviceClient.types";
 
 export const devicesApiClient = {
+  getDevices: async (params: { limit?: number; offset?: number; search?: string; status?: "online" | "offline" } = {}) => {
+    try {
+      const response = await apiClient.get<DeviceResponse[]>("/devices", { params });
+      return { devices: response.data, total: Number(response.headers["x-total-count"]) };
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) throw error.response.data as ApiErrorResponse;
+      throw new Error("Не удалось загрузить список устройств");
+    }
+  },
   /**
    * Создать новое устройство
    * POST /devices

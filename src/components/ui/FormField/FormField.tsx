@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import styles from "./FormField.module.css";
 
 interface FormFieldProps extends ComponentPropsWithoutRef<"input"> {

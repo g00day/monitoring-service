@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import FormField from "@ui/FormField/FormField";
 import SubmitButton from "@ui/SubmitButton/SubmitButton";
 import { loginClient } from "@api/authClients/loginClient/loginClient";

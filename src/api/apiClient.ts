@@ -1,11 +1,23 @@
 import axios from "axios";
 
 export const apiClient = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: "/api",
+  timeout: 15000,
   headers: {
     "Content-Type": "application/json",
   },
 });
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && error.config?.url !== "/auth/login") {
+      localStorage.removeItem("access_token");
+      if (window.location.pathname !== "/") window.location.replace("/");
+    }
+    return Promise.reject(error);
+  },
+);
 
 // Интерцептор для автоматического добавления Bearer токена в заголовки
 apiClient.interceptors.request.use((config) => {

@@ -15,11 +15,7 @@ export interface AgentMetricsPayload {
   services: Record<string, string> | null;
 }
 
-export interface VerifyAgentResponse {
-  status: string;
-  device_id: number;
-  device_name: string;
-}
+export type { DeviceResponse as VerifyAgentResponse } from "../../devicesClients/deviceClient/deviceClient.types";
 
 export interface ValidationErrorElement {
   loc: (string | number)[];

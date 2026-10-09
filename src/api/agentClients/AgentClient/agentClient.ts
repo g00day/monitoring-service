@@ -1,6 +1,7 @@
 import axios from "axios";
 import { apiClient } from "../../apiClient";
 import type { AgentMetricsPayload, VerifyAgentResponse, ApiErrorResponse } from "./agentClient.types";
+import type { MetricsResponse } from "../../devicesClients/deviceClient/deviceClient.types";
 
 
 export const createAgentClient = (agentToken: string) => {
@@ -18,11 +19,11 @@ export const createAgentClient = (agentToken: string) => {
   return {
     /**
      * Проверить валидность токена агента и получить привязанное устройство
-     * GET /agent/verify
+     * GET /agent
      */
     verifyAgent: async (): Promise<VerifyAgentResponse> => {
       try {
-        const response = await agentInstance.get<VerifyAgentResponse>("/agent/verify");
+        const response = await agentInstance.get<VerifyAgentResponse>("/agent");
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -35,11 +36,12 @@ export const createAgentClient = (agentToken: string) => {
 
     /**
      * Отправить собранные метрики операционной системы на бэкенд
-     * POST /agent/metrics
+     * POST /metrics
      */
-    sendMetrics: async (payload: AgentMetricsPayload): Promise<void> => {
+    sendMetrics: async (payload: AgentMetricsPayload): Promise<MetricsResponse> => {
       try {
-        await agentInstance.post<void>("/agent/metrics", payload);
+        const response = await agentInstance.post<MetricsResponse>("/metrics", payload);
+        return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
           const apiError = error.response.data as ApiErrorResponse;

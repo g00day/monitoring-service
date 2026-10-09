@@ -1,20 +1,14 @@
 import { useEffect, useState } from "react";
 
 export const useAuthProtected = () => {
-  const [isChecking, setIsChecking] = useState(true);
-  const [hasToken, setHasToken] = useState(false);
+  const [hasToken] = useState(() => Boolean(localStorage.getItem("access_token")));
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-
-    if (!token) {
+    if (!hasToken) {
       // Если токена нет -> отправка на страницу входа
       window.location.replace("/");
-    } else {
-      setHasToken(true);
-      setIsChecking(false);
     }
-  }, []);
+  }, [hasToken]);
 
-  return { isChecking, isAuthenticated: hasToken };
+  return { isChecking: !hasToken, isAuthenticated: hasToken };
 };

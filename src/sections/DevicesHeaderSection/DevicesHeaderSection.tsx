@@ -16,6 +16,7 @@ interface DevicesHeaderSectionProps {
   lastMeasurement: string;
   metrics: MetricItem[];
   onRename?: () => void;
+  onChangeAgentToken?: () => void;
   onBackClick?: () => void;
 }
 
@@ -26,6 +27,7 @@ const DevicesHeaderSection = ({
   lastMeasurement,
   metrics,
   onRename,
+  onChangeAgentToken,
   onBackClick,
 }: DevicesHeaderSectionProps) => {
   return (
@@ -51,10 +53,10 @@ const DevicesHeaderSection = ({
         </div>
 
         <div className={styles.buttonWrapper}>
-            <SubmitButton coloringType="submit">
+            <SubmitButton coloringType="submit" onClick={onRename}>
                 Переименовать
             </SubmitButton>
-            <SubmitButton coloringType="submit">
+            <SubmitButton coloringType="submit" onClick={onChangeAgentToken}>
               Изменить токен агента
             </SubmitButton>
         </div>
